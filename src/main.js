@@ -1,6 +1,6 @@
 const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
 const { getFirestore, collection, getDocs, getDoc, Timestamp, FieldValue } = require('firebase-admin/firestore');
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 
 const serviceAccount = require('../fatecweb-32840-firebase-adminsdk-3q5xm-e05c652711.json');
@@ -8,9 +8,21 @@ const serviceAccount = require('../fatecweb-32840-firebase-adminsdk-3q5xm-e05c65
 initializeApp({
                   credential: cert(serviceAccount)
 });
-const auth = getAuth(firebaseApp);
+
 const db = getFirestore();
-const snapshot = getDocs(citiesRef);
+
+const auth = getAuth(firebaseApp);
+createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in
+    const user = userCredential.user;
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // ..
+  });
 
 //Detect auth state
 onAuthStateChanged(auth, user => {
