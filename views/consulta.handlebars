@@ -25,15 +25,13 @@
 
 <p class="d-flex p-2">Sistema utilizado para agendamento de serviços</p>
 
-
-
 <div class="container-lg">
   <div class="container text-center">
     <div class="row">
-      <div class="col  bg-primary text-light">
+      <div class="col bg-primary text-light">
         ID
-     </div>
-      <div class="col  bg-primary text-light">
+      </div>
+      <div class="col bg-primary text-light">
         Nome
       </div>
       <div class="col bg-primary text-light">
@@ -43,7 +41,7 @@
         Origem
       </div>
       <div class="col bg-primary text-light">
-        Data de nascimento
+        Data de Nascimento
       </div>
       <div class="col bg-primary text-light">
         Observação
@@ -56,28 +54,29 @@
     {{#each documents}}
     <div class="row">
       <div class="col">
+        {{this.id}}
       </div>
       <div class="col">
-        {{nome}}
+        {{this.nome}}
       </div>
       <div class="col">
-        {{telefone}}
+        {{this.telefone}}
       </div>
       <div class="col">
-        {{origem}}
+        {{this.origem}}
       </div>
       <div class="col">
-        {{data}}
+        {{this.data}}
       </div>
       <div class="col">
-        {{observacao}}
+        {{this.observacao}}
       </div>
       <div class="col">
-        <a href="/editar/{{id}}" class="btn btn-secondary"> Editar</a>
-        <a href="/deletar/{{id}}" class="btn btn-danger"> Excluir</a>
+        <a href="/editar/{{this.id}}" class="btn btn-secondary">Editar</a>
+        <a href="/deletar/{{this.id}}" class="btn btn-danger">Excluir</a>
       </div>
+      <br>
     </div>
     {{/each}}
-
   </div>
 </div>
