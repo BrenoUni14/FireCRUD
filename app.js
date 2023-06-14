@@ -69,26 +69,57 @@ app.get('/consulta', (req, res) => {
 
 //---------------------------------------------------------------/
 // Criando uma rota para a página de edição
-app.get("/editar/:id", function (req, res) {
-    const documentId = req.params.id;
-    db.collection('agendamentos')
-        .doc(documentId)
-        .get()
+app.get("/editar/:id", (req, res) => {
+    const { id } = req.params;
+    const arr = [];
+    let obj = {};
+
+    db.collection('agendamentos').doc(id).get()
         .then((doc) => {
             if (doc.exists) {
-                const documentData = doc.data();
-                documentData.id = doc.id; // Adiciona a propriedade 'id' ao documento
-                res.render('editar', { post: documentData }); // Renderiza o template 'editar' com os dados do documento
+                obj = {
+                    id: doc.id,
+                    dataValues: doc.data()
+                };
+                arr.push(obj);
+                res.render("editar", {
+                    data: arr,
+                    id: id // Passando o ID para a página de edição
+                });
             } else {
-                console.log('Documento não encontrado');
-                res.redirect('/consulta');
+                console.log("Documento não encontrado.");
+                res.redirect("/consulta");
             }
         })
         .catch((error) => {
-            console.log('Erro ao consultar o Firestore: ', error);
-            res.redirect('/consulta');
+            console.error('Erro ao ler documento: ', error);
+            res.redirect("/consulta");
         });
 });
+
+
+//---------------------------------------------------------------/
+// Criando uma rota para a atualização na consulta
+app.post("/atualizar/:id", function(req, res){
+    const {id} = req.params
+    console.log(id);
+    db.collection('agendamentos').doc(id).update({
+        nome: req.body.nome,
+        telefone: req.body.telefone,
+        origem: req.body.origem,
+        data_contato: req.body.data_contato,
+        observacao: req.body.observacao
+    })
+    .then(() => {
+        console.log('Documento atualizado com sucesso!');
+        res.redirect("/consulta")
+    })
+        .catch((error) => {
+        console.error('Erro ao atualizar documento: ', error);
+    });
+})
+
+
 
 //---------------------------------------------------------------/
 //criando uma rota para a página de exclusão
@@ -103,30 +134,6 @@ app.get("/deletar/:id", function (req, res) {
         })
         .catch((error) => {
             console.log('Erro ao excluir o documento: ', error);
-            res.redirect('/consulta');
-        });
-});
-
-//---------------------------------------------------------------/
-//criando uma rota para a atualização na consulta
-app.post("/atualizar", function (req, res) {
-    const documentId = req.body.id;
-    const updatedDocument = {
-        nome: req.body.nome,
-        telefone: req.body.telefone,
-        origem: req.body.origem,
-        data: req.body.data,
-        observacao: req.body.observacao
-    };
-    db.collection('agendamentos')
-        .doc(documentId)
-        .update(updatedDocument)
-        .then(() => {
-            console.log('Documento atualizado com sucesso');
-            res.redirect('/consulta');
-        })
-        .catch((error) => {
-            console.log('Erro ao atualizar o documento: ', error);
             res.redirect('/consulta');
         });
 });
